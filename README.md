@@ -108,9 +108,9 @@ public class RoleServiceTest{
 }
 ``` 
 
-Useful links: 
-http://c2.com/cgi/wiki?ObjectMother
-http://c2.com/cgi/wiki?TestDataBuilder
+## Useful links: 
+* http://c2.com/cgi/wiki?ObjectMother
+* http://c2.com/cgi/wiki?TestDataBuilder
 
 ## DISCLAIMER:
 Purpose of project is only educational.
