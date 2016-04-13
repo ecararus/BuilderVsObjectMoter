@@ -1,4 +1,4 @@
-# BuilderVsObjectMoter
+# Builder Vs Object Mother
 
 Scope: Use builder pattern instead of object mother.
 
