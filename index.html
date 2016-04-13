@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Buildervsobjectmoter by ecararus</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Buildervsobjectmoter</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/ecararus/BuilderVsObjectMoter">View the Project on GitHub <small>ecararus/BuilderVsObjectMoter</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ecararus/BuilderVsObjectMoter/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ecararus/BuilderVsObjectMoter/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ecararus/BuilderVsObjectMoter">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="buildervsobjectmoter" class="anchor" href="#buildervsobjectmoter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BuilderVsObjectMoter</h1>
+
+<p>Scope: Use builder pattern instead of object mother.</p>
+
+<h2>
+<a id="objectmother" class="anchor" href="#objectmother" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ObjectMother</h2>
+
+<p>ObjectMother starts with the factory pattern, by delivering prefabricated test-ready objects via a simple method call. </p>
+
+<p>Some reasons to use ObjectMother:</p>
+
+<ul>
+<li>Reduce code duplication in tests, increasing test maintainability</li>
+<li>Make test objects super-easily accessible, encouraging developers to write more tests.</li>
+<li>Every test runs with fresh data.</li>
+<li>Tests always clean up after themselves.</li>
+</ul>
+
+<pre><code>public class UsersOM {
+
+    public static User aRegularUser() {
+        return new User("Eugeniu", "Cararus", "ROLE_USER");
+    }
+
+    public static User aPriviledgedUser() {
+        return new User("Martin", "Bosh", "ROLE_SUPER_USER");
+    }
+
+    // other factory methods
+
+}
+
+public class RoleServiceTest{
+
+    @Test
+    public void shouldExecuteSuFromRegularUser(){
+        User regularUser = UsersOM.aRegularUser();
+        User superUser = UsersOM.aPriviledgedUser();
+        // The SUT.
+    }   
+}
+
+</code></pre>
+
+<p>The problem whith this kind of aproache commes when the User object is complex and combination of users to be created for different scenatios is big, by keeping creating Object Mother the menatinance and cleanning of OMother is bigger chalenge than the value which it brings for tests.</p>
+
+<h2>
+<a id="test-data-builder" class="anchor" href="#test-data-builder" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Test Data Builder</h2>
+
+<p>Test Data builder starts with <a href="https://cararuseugeniu.blogspot.co.uk/p/design-patterns-in-images.html">Builder pattern</a> to create objects in Unit Tests. 
+The TestDataBuilder pattern allows tests to specify only those parts of the objects that need to vary and use sensible defaults for those that are not relevant to the test.</p>
+
+<pre><code>public class UserBuilder {
+
+    public static final String DEFAULT_FIRSTNAME = "Eugeniu";
+    public static final String DEFAULT_SURNAME = "Cararus";
+    public static final String DEFAULT_ROLE = "ROLE_USER";
+
+    private String firstname = DEFAULT_FIRSTNAME;
+    private String surname = DEFAULT_SURNAME;
+    private String role = DEFAULT_ROLE;
+
+    private UserBuilder() {
+    }
+
+    public static UserBuilder aUser() {
+        return new UserBuilder();
+    }
+
+    public UserBuilder withFirstname(String firstname) {
+        this.firstname = firstname;
+        return this;
+    }
+
+    public UserBuilder withSurname(String surname) {
+        this.surname = surname;
+        return this;
+    }
+
+    public UserBuilder withNoSurname() {
+        this.surname = null;
+        return this;
+    }
+
+    public UserBuilder inRegularUser() {
+        this.role = "ROLE_USER";
+        return this;
+    }
+
+    public UserBuilder inPriviledgedUser() {
+        this.role = "ROLE_ADMIN";
+        return this;
+    }
+
+    public UserBuilder inRole(String role) {
+        this.role = role;
+        return this;
+    }
+
+    public User build() {
+        return new User(firstname, surname, role);
+    }
+}
+
+public class RoleServiceTest{
+
+    @Test
+    public void shouldExecuteSuFromRegularUser(){
+        User regularUser = UserBuilder.build();
+        User superUser = UserBuilder.withFirstname("Martin").withSurname("Bosh").inPriviledgedUser().build();
+        // The SUT.
+    }   
+}
+</code></pre>
+
+<h2>
+<a id="useful-links" class="anchor" href="#useful-links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Useful links:</h2>
+
+<ul>
+<li><a href="http://c2.com/cgi/wiki?ObjectMother">http://c2.com/cgi/wiki?ObjectMother</a></li>
+<li><a href="http://c2.com/cgi/wiki?TestDataBuilder">http://c2.com/cgi/wiki?TestDataBuilder</a></li>
+</ul>
+
+<h2>
+<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>DISCLAIMER:</h2>
+
+<p>Purpose of project is only educational.
+This project should not be used for any commercial purpose.
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">http://creativecommons.org/licenses/by-nc-sa/4.0/</a>.</p>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author:</h2>
+
+<p>Eugeniu Cararus
+<a href="mailto:cararuseugeniu@gmail.com">cararuseugeniu@gmail.com</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ecararus">ecararus</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
